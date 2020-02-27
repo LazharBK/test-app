@@ -51,25 +51,25 @@ class LinkController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'url' => 'required|regex:/^.+@.+$/i',
+            'url' => "required",
         ]);
         if($validatedData){
             $url=$request->input('url');
-            if(preg_match( '/^(http|https):\\/\\/[a-z0-9_]+([\\-\\.]{1}[a-z_0-9]+)*\\.[_a-z]{2,5}'.'((:[0-9]{1,5})?\\/.*)?$/i' ,$uri)){
+            $link=new Link();
+            if(preg_match( '/^(http|https):\\/\\/[a-z0-9_]+([\\-\\.]{1}[a-z_0-9]+)*\\.[_a-z]{2,5}'.'((:[0-9]{1,5})?\\/.*)?$/i' ,$url)){
                 $link->url=$url;
             }else{
-                // return redirect()->route('link.add')->with('error','url non valid');
+                 return redirect()->route('link.create')->with('error','url non valid');
             }
-            $link=new Link();
             $link->user_id=Auth::user()->id;
             $link->code=Str::random(10);
             
             $link->url=$request->input('url');
             $link->save();
-            return redirect()->route('link.add')->with('success','link create');
+            return redirect()->route('link.create')->with('success','link create');
         }
         //die($errors->first('url'));
-        return redirect()->route('link.add')->with('error','link not create');
+        return redirect()->route('link.create')->with('error','link not create');
     }
 
     /**
