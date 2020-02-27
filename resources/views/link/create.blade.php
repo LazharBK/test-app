@@ -8,10 +8,11 @@
                 <div class="card-header">Dashboard</div>
 
                 <div class="card-body">
-                <form>
+                <form method="POST" action="{{route('link.store')}}">
+                    @csrf	
                     <div class="form-group">
                     <label for="exampleFormControlInput1">Link</label>
-                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Votre lien">
+                    <input type="text" class="form-control" name="url" placeholder="Votre lien">
                     </div>
                     <input class="btn btn-primary" type="submit" value="Submit">
                 </form>

@@ -9,11 +9,14 @@
 
                 <div class="card-body">
                 <ul class="list-group">
-                    <li class="list-group-item">Cras justo odio</li>
-                    <li class="list-group-item">Dapibus ac facilisis in</li>
-                    <li class="list-group-item">Morbi leo risus</li>
-                    <li class="list-group-item">Porta ac consectetur ac</li>
-                    <li class="list-group-item">Vestibulum at eros</li>
+                @if(count($links)>0)
+                    @foreach($links as $link)
+                        <li class="list-group-item"><a href="{{route('link.show',['link'=>$link->code])}}">{{route('link.show',['link'=>$link->code])}}</a> : for route: {{$link->url}} </li>
+                    @endforeach
+                    @else
+                  
+                  <li class="list-group-item">No link found :(</li>
+                      @endif
                     </ul>
                 </div>
                 <div class="card-footer">

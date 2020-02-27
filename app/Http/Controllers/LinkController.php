@@ -3,9 +3,24 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Link;
+use App\User;
+use Illuminate\Support\Str;
 
 class LinkController extends Controller
 {
+
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth',['except'=>['show']]);
+      
+    }
     /**
      * Display a listing of the resource.
      *
@@ -13,7 +28,8 @@ class LinkController extends Controller
      */
     public function index()
     {
-        return view('link.index');
+        $links=Link::where('user_id',Auth::user()->id)->get();
+        return view('link.index')->with('links',$links);
     }
 
     /**
@@ -35,9 +51,25 @@ class LinkController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'url' => 'required|url|max:255',
-            'body' => 'required',
+            'url' => 'required|regex:/^.+@.+$/i',
         ]);
+        if($validatedData){
+            $url=$request->input('url');
+            if(preg_match( '/^(http|https):\\/\\/[a-z0-9_]+([\\-\\.]{1}[a-z_0-9]+)*\\.[_a-z]{2,5}'.'((:[0-9]{1,5})?\\/.*)?$/i' ,$uri)){
+                $link->url=$url;
+            }else{
+                // return redirect()->route('link.add')->with('error','url non valid');
+            }
+            $link=new Link();
+            $link->user_id=Auth::user()->id;
+            $link->code=Str::random(10);
+            
+            $link->url=$request->input('url');
+            $link->save();
+            return redirect()->route('link.add')->with('success','link create');
+        }
+        //die($errors->first('url'));
+        return redirect()->route('link.add')->with('error','link not create');
     }
 
     /**
@@ -46,9 +78,9 @@ class LinkController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($code)
     {
-        //
+        return redirect()->away(Link::where('code',$code)->first()->url);
     }
 
     /**
