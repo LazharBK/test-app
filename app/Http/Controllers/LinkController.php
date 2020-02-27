@@ -62,7 +62,7 @@ class LinkController extends Controller
                  return redirect()->route('link.create')->with('error','url non valid');
             }
             $link->user_id=Auth::user()->id;
-            $link->code=Str::random(10);
+            $link->code=Str::uuid();//method generate unique code
             
             $link->url=$request->input('url');
             $link->save();
